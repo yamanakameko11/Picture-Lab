@@ -223,6 +223,33 @@ public class Picture extends SimplePicture
         }
     }
 
+    /** copy triangular area and mirror */
+    public void mirrorDiagonal()
+    {
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel topRightPixel = null;
+        Pixel bottomLeftPixel = null;
+        int maxLength;
+        if (pixels.length < pixels[0].length) 
+        {
+            maxLength = pixels.length; 
+        }
+        else 
+        {
+            maxLength = pixels[0].length; 
+        }
+
+        for (int row = 0; row < maxLength; row++)
+        {
+            for (int col = row; col < maxLength; col++)
+            {
+                topRightPixel = pixels[row][col];
+                bottomLeftPixel = pixels[col][row];
+                bottomLeftPixel.setColor(topRightPixel.getColor());
+            }
+        }
+    }
+
     /** Mirror just part of a picture of a temple */
     public void mirrorTemple()
     {
@@ -271,7 +298,7 @@ public class Picture extends SimplePicture
             }
         }
     }
-    
+
     /** Method to mirror the seagull to the right to make two seagulls on the beach. */
     public void mirrorGull() 
     {
@@ -321,6 +348,24 @@ public class Picture extends SimplePicture
         }   
     }
 
+    /** Method to copy part of fromPic */
+    public void secondCopy (Picture fromPic, int startRow, int endRow, int startCol, int endCol)
+    {
+        Pixel fromPixel = null;
+        Pixel toPixel = null;
+        Pixel[][] fromPixels = fromPic.getPixels2D();
+        Pixel[][] toPixels = this.getPixels2D();
+        for (int fromRow = 0, toRow = startRow; fromRow < fromPixels.length && toRow < endRow; fromRow++, toRow++)
+        {
+            for (int fromCol = 0, toCol = startCol; fromCol < fromPixels[0].length && toCol < endCol; fromCol++, toCol++)
+            {
+                fromPixel = fromPixels[fromRow][fromCol];
+                toPixel = toPixels[toRow][toCol];
+                toPixel.setColor(fromPixel.getColor());
+            }
+        }
+    }
+
     /** Method to create a collage of several pictures */
     public void createCollage()
     {
@@ -338,28 +383,125 @@ public class Picture extends SimplePicture
         this.write("collage.jpg");
     }
 
+    /** My collage */
+    public void myCollage()
+    {
+        Picture bb = new Picture("bb.jpg");
+        Picture he = new Picture("he.jpg");
+        Picture sad = new Picture("sad.jpg");
+        this.copy(bb, 50, 50);
+        he.negate();
+        this.copy(he, 750, 234);
+        this.copy(sad, 20, 600);
+        this.mirrorVertical();
+        this.write("best-collage");
+    }
+
     /** Method to show large changes in color 
      * @param edgeDist the distance for finding edges
      */
     public void edgeDetection(int edgeDist)
     {
+        Pixel[][] pixels = this.getPixels2D();
         Pixel leftPixel = null;
         Pixel rightPixel = null;
-        Pixel[][] pixels = this.getPixels2D();
-        Color rightColor = null;
-        for (int row = 0; row < pixels.length; row++)
+        Pixel topPixel = null;
+        Pixel bottomPixel = null;
+        for (int row = 0; row < pixels.length - 1; row++)
         {
             for (int col = 0; 
             col < pixels[0].length-1; col++)
             {
                 leftPixel = pixels[row][col];
                 rightPixel = pixels[row][col+1];
-                rightColor = rightPixel.getColor();
-                if (leftPixel.colorDistance(rightColor) > 
-                edgeDist)
+                topPixel = pixels[row][col];
+                bottomPixel = pixels[row + 1][col];
+                if (leftPixel.colorDistance(rightPixel.getColor()) > edgeDist ||
+                topPixel.colorDistance(bottomPixel.getColor()) > edgeDist)
                     leftPixel.setColor(Color.BLACK);
                 else
                     leftPixel.setColor(Color.WHITE);
+            }
+        }
+    }
+    
+    public void edgeDetection2(int edgeDist)
+    {
+        Pixel[][] pixels = this.getPixels2D();
+        Pixel leftPixel = null;
+        Pixel rightPixel = null;
+        Pixel topPixel = null;
+        Pixel bottomPixel = null;
+        for (int row = 0; row < pixels.length - 1; row++)
+        {
+            for (int col = 0; 
+            col < pixels[0].length-1; col++)
+            {
+                leftPixel = pixels[row][col];
+                rightPixel = pixels[row][col+1];
+                topPixel = pixels[row][col];
+                bottomPixel = pixels[row + 1][col];
+                if (leftPixel.colorDistance(rightPixel.getColor()) > edgeDist ||
+                topPixel.colorDistance(bottomPixel.getColor()) > edgeDist)
+                    leftPixel.setColor(Color.WHITE);
+                else
+                    leftPixel.setColor(Color.BLACK);
+            }
+        }
+    }
+    
+    /** Method for new edge detection*/
+    
+
+    public void fixUnderwater()
+    {
+        Pixel[][] pixels = this.getPixels2D();
+        int redAverage = 0;
+        int greenAverage = 0;
+        int blueAverage = 0;
+        int totalPixels = 0;
+        int maxRed = 0;
+        int minRed = 255;
+        int maxGreen = 0;
+        int minGreen = 255;
+        int maxBlue = 0;
+        int minBlue = 255;
+        for (int row = 26; row < 36; row++)
+        {
+            for (int col = 178; col < 198; col++)
+            {
+                totalPixels++;
+
+                Pixel myPixel = pixels[row][col];
+
+                redAverage += myPixel.getRed();
+                greenAverage += myPixel.getGreen();
+                blueAverage += myPixel.getBlue();
+                if (myPixel.getRed() > maxRed) 
+                { 
+                    maxRed = myPixel.getRed(); 
+                }
+                if (myPixel.getRed() < minRed) 
+                { 
+                    minRed = myPixel.getRed(); 
+                }
+                if (myPixel.getGreen() > maxGreen) 
+                { 
+                    maxGreen = myPixel.getGreen(); 
+                }
+                if (myPixel.getGreen() < minGreen) 
+                { 
+                    minGreen = myPixel.getGreen(); 
+                }
+                if (myPixel.getBlue() > maxBlue) 
+                { 
+                    maxBlue = myPixel.getBlue(); 
+                }
+                if (myPixel.getGreen() < minBlue) 
+                { 
+                    minBlue = myPixel.getBlue(); 
+                }
+
             }
         }
     }

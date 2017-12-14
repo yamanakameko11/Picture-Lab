@@ -106,12 +106,29 @@ public class PictureTester
         gull.mirrorGull();
         gull.explore();
     }
-
+    
+    /** Method to test second copy method. */
+    public static void testCopy2() 
+    {
+        Picture wall = new Picture("wall.jpg");
+        wall.explore();
+        wall.secondCopy(wall, 261, 317, 269, 340);
+        wall.explore();
+    }
     /** Method to test the collage method */
     public static void testCollage()
     {
         Picture canvas = new Picture("640x480.jpg");
         canvas.createCollage();
+        canvas.explore();
+    }
+    
+    /** My Collage */
+    public static void testMyCollage()
+    {
+        Picture canvas = new Picture("big-he.jpg");
+        canvas.keepOnlyBlue();
+        canvas.myCollage();
         canvas.explore();
     }
 
@@ -121,6 +138,29 @@ public class PictureTester
         Picture swan = new Picture("swan.jpg");
         swan.edgeDetection(10);
         swan.explore();
+    }
+    
+    public static void testEdgeDetection2()
+    {
+        Picture swan = new Picture("swan.jpg");
+        swan.edgeDetection2(10);
+        swan.explore();
+    }
+    
+    /** Fixing those fish. */
+    public static void testFixUnderwater() 
+    {
+        Picture water = new Picture("water.jpg");
+        water.fixUnderwater();
+        water.explore();
+    }
+    
+    /** Method to test mirrorDiagonal */
+    public static void testMirrorDiagonal()
+    {
+        Picture sad = new Picture("sad.jpg");
+        sad.mirrorDiagonal();
+        sad.explore();
     }
 
     /** Main method for testing.  Every class can have a main
@@ -132,8 +172,6 @@ public class PictureTester
         // to run
         //testZeroBlue();
         //testKeepOnlyBlue();
-        //testKeepOnlyRed();
-        //testKeepOnlyGreen();
         //testNegate();
         //testGrayscale();
         //testFixUnderwater();
